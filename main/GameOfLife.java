@@ -6,8 +6,8 @@ import java.util.Objects;
 public class GameOfLife {
     private Integer width;
     private Integer height;
-    private Integer currentState[][];
-    private Integer nextState[][];
+    private static Integer[][] currentState;
+    private static Integer[][] nextState;
 
     private static final Integer ALIVE = 100;
     private static final Integer DEAD = 0;
@@ -48,15 +48,15 @@ public class GameOfLife {
         System.out.println(Alive);
     }
 
-    public Integer[][] getCurrentState(){
+    public static Integer[][] getCurrentState(){
         return currentState;
     }
 
-    public Integer getCellState(Integer x, Integer y){
+    public static Integer getCellState(Integer x, Integer y){
         return currentState[x][y];
     }
 
-    public void changeCellState(Integer x, Integer y){
+    public static void changeCellState(Integer x, Integer y){
         if(Objects.equals(getCellState(x, y), ALIVE)){
             currentState[x][y] = DEAD;
             nextState[x][y] = DEAD;
