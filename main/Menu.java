@@ -2,6 +2,7 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 import java.util.List;
 import java.util.Objects;
 
@@ -75,6 +76,10 @@ public class Menu extends JFrame{
         startButton.addActionListener(e -> startNewGame());
         newGamePanel.add(startButton, BorderLayout.SOUTH);
 
+        JButton saveSelect = new JButton("Mentési fájl kiválasztása");
+        saveSelect.addActionListener(e -> loadGame());
+        loadGamePanel.add(saveSelect);
+
 
         this.add(buttonPanel, BorderLayout.NORTH);
         this.add(cardPanel, BorderLayout.CENTER);
@@ -84,7 +89,26 @@ public class Menu extends JFrame{
     }
 
     public void startNewGame(){
-        System.out.println("New game \nPálya: " + gridSelector.getSelectedItem() + "\nSzabály: " + ruleSelector.getSelectedItem());
+        if(ruleSelector.getSelectedItem() != null) {
+           // GameOfLife gol = new GameOfLife(gridSelector.getSelectedItem(), ruleSelector.getSelectedItem());
+        }else{
+            JOptionPane.showMessageDialog(this, "Nem választottad ki a játékszabályt!");
+        }
+    }
+
+    public void loadGame(){
+        File workingDirectory = new File(System.getProperty("user.dir"));
+
+
+        JFileChooser fc = new JFileChooser();
+        fc.setCurrentDirectory(workingDirectory);
+        fc.showOpenDialog(this);
+        /*try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(fc.getSelectedFile()))){
+           // GameOfLife loadGame = (GameOfLife) in.readObject();
+            //loadGame.setVisible(true);
+        }catch(IOException | ClassNotFoundException exception){
+            JOptionPane.showMessageDialog(this, "Nem sikerult betolteni" + exception.toString());
+        }*/
     }
 
     public void updateRuleSelector(){
