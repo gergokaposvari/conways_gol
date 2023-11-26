@@ -13,8 +13,8 @@ public class GameOfLife implements Serializable {
     private static final Integer ALIVE = 100;
     private static final Integer DEAD = 0;
     private final Object object;
-    private ArrayList<Integer> Born;
-    private ArrayList<Integer> Alive;
+    private final ArrayList<Integer> Born;
+    private final ArrayList<Integer> Alive;
 
     public GameOfLife(Integer x, Integer y, Object rule){
         Born = new ArrayList<>();
@@ -158,9 +158,7 @@ public class GameOfLife implements Serializable {
     public void simulateGeneration(){
         calculateNextState();
         for(int i = 0; i < width; i++){
-            for(int j = 0; j < height; j++){
-                currentState[i][j] = nextState[i][j];
-            }
+            if (height >= 0) System.arraycopy(nextState[i], 0, currentState[i], 0, height);
         }
     }
 

@@ -31,37 +31,7 @@ public class GridDrawer extends JFrame {
         gridPanel = new GridPanel();
         add(gridPanel, BorderLayout.CENTER);
 
-        JMenuBar menuBar = new JMenuBar();
-
-        JMenu file = new JMenu("Fájl");
-
-        JMenuItem saveAndExit = new JMenuItem("Mentés és kilépés");
-        saveAndExit.addActionListener(e -> {
-            JFrame frame = new JFrame();
-            String message = "A mentési fájl neve:";
-            String text = JOptionPane.showInputDialog(frame, message);
-            boolean abortSave = false;
-            if (text == null) {
-                abortSave = true;
-            }
-            if(!abortSave) {
-                try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("saves/" + text + ".txt"))){
-                    out.writeObject(currentGame.getCurrentState());
-                    out.writeObject(currentGame.getRule());
-                    System.exit(0);
-                } catch (IOException ex) {
-                    System.out.println(ex + "\n Nem sikerült menteni!");
-                }
-            }
-        });
-
-        JMenuItem onlyExit = new JMenuItem("Kilépés");
-        onlyExit.addActionListener(e -> System.exit(0));
-
-        file.add(saveAndExit);
-        file.add(onlyExit);
-
-        menuBar.add(file);
+        JMenuBar menuBar = getjMenuBar();
         setJMenuBar(menuBar);
 
 
@@ -110,6 +80,41 @@ public class GridDrawer extends JFrame {
 
 
         add(interactionPanel, BorderLayout.EAST);
+    }
+
+    private JMenuBar getjMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu file = new JMenu("Fájl");
+
+        JMenuItem saveAndExit = new JMenuItem("Mentés és kilépés");
+        saveAndExit.addActionListener(e -> {
+            JFrame frame = new JFrame();
+            String message = "A mentési fájl neve:";
+            String text = JOptionPane.showInputDialog(frame, message);
+            boolean abortSave = false;
+            if (text == null) {
+                abortSave = true;
+            }
+            if(!abortSave) {
+                try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("saves/" + text + ".txt"))){
+                    out.writeObject(currentGame.getCurrentState());
+                    out.writeObject(currentGame.getRule());
+                    System.exit(0);
+                } catch (IOException ex) {
+                    System.out.println(ex + "\n Nem sikerült menteni!");
+                }
+            }
+        });
+
+        JMenuItem onlyExit = new JMenuItem("Kilépés");
+        onlyExit.addActionListener(e -> System.exit(0));
+
+        file.add(saveAndExit);
+        file.add(onlyExit);
+
+        menuBar.add(file);
+        return menuBar;
     }
 
     public void setGrid(Integer[][] newGrid) {

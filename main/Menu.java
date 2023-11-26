@@ -123,7 +123,7 @@ public class Menu extends JFrame{
             GameOfLife gol = new GameOfLife(board, rule);
             start(gol);
         }catch(ClassNotFoundException | IOException exception){
-            JOptionPane.showMessageDialog(this, "Nem sikerult betolteni" + exception.toString());
+            JOptionPane.showMessageDialog(this, "Nem sikerult betolteni" + exception);
         }catch(NullPointerException exception){
             JOptionPane.showMessageDialog(this, "Nem választottál fájlt!");
         }
@@ -141,9 +141,7 @@ public class Menu extends JFrame{
         });
         simulationThread.setDaemon(true);
         simulationThread.start();
-        SwingUtilities.invokeLater(() -> {
-            grid.setVisible(true);
-        });
+        grid.setVisible(true);
     }
 
     public void updateRuleSelector(){
