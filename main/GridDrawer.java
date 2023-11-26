@@ -65,16 +65,17 @@ public class GridDrawer extends JFrame {
         setJMenuBar(menuBar);
 
 
-        interactionPanel = new JPanel(new BorderLayout());
+        interactionPanel = new JPanel();
+        interactionPanel.setLayout(new BoxLayout(interactionPanel, BoxLayout.Y_AXIS));
 
         JButton increaseSpeed = new JButton("Sebesség++");
         increaseSpeed.addActionListener(e -> Menu.decreaseSleepTime());
-        JPanel increasePanel = new JPanel();
+        JPanel increasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         increasePanel.add(increaseSpeed);
 
         JButton decreaseSpeed = new JButton("Sebesség--");
         decreaseSpeed.addActionListener(e -> Menu.increaseSleepTime());
-        JPanel decreasePanel = new JPanel();
+        JPanel decreasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         decreasePanel.add(decreaseSpeed);
 
         JButton startStop = new JButton("Indítás");
@@ -86,7 +87,7 @@ public class GridDrawer extends JFrame {
                 startStop.setText("Indítás");
             }
         });
-        JPanel startStopPanel = new JPanel();
+        JPanel startStopPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         startStopPanel.add(startStop);
 
         JButton changeFading = new JButton("Színátmenet be");
@@ -98,17 +99,14 @@ public class GridDrawer extends JFrame {
                 changeFading.setText("Színátmenet be");
             }
         });
-        JPanel fadingPanel = new JPanel();
+        JPanel fadingPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         fadingPanel.add(changeFading);
 
-        JPanel togglePanel = new JPanel();
 
-        togglePanel.add(fadingPanel, BorderLayout.NORTH);
-        togglePanel.add(startStopPanel, BorderLayout.SOUTH);
-
-        interactionPanel.add(increasePanel, BorderLayout.NORTH);
-        interactionPanel.add(togglePanel, BorderLayout.CENTER);
-        interactionPanel.add(decreasePanel, BorderLayout.SOUTH);
+        interactionPanel.add(increaseSpeed);
+        interactionPanel.add(startStop);
+        interactionPanel.add(changeFading);
+        interactionPanel.add(decreaseSpeed);
 
 
         add(interactionPanel, BorderLayout.EAST);
