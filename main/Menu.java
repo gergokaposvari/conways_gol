@@ -29,6 +29,12 @@ public class Menu extends JFrame{
     }
 
 
+    public static Integer SLEEPTIME = 960;
+    static boolean paused = true;
+
+
+
+
 
     public Menu(){
         super("Game of life");
@@ -73,7 +79,13 @@ public class Menu extends JFrame{
 
 
         JButton startButton = new JButton("Játék indítása a megadott beállításokkal");
-        startButton.addActionListener(e -> startNewGame());
+        startButton.addActionListener(e -> {
+            try {
+                startNewGame();
+            } catch (InterruptedException ex) {
+                System.out.println("Nem sikerült elindítani");
+            }
+        });
         newGamePanel.add(startButton, BorderLayout.SOUTH);
 
         JButton saveSelect = new JButton("Mentési fájl kiválasztása");
@@ -88,9 +100,10 @@ public class Menu extends JFrame{
         this.setVisible(true);
     }
 
-    public void startNewGame(){
+    public void startNewGame() throws InterruptedException {
         if(ruleSelector.getSelectedItem() != null) {
-           // GameOfLife gol = new GameOfLife(gridSelector.getSelectedItem(), ruleSelector.getSelectedItem());
+            GameOfLife gol = new GameOfLife(65, 65, ruleSelector.getSelectedItem());
+            start(gol);
         }else{
             JOptionPane.showMessageDialog(this, "Nem választottad ki a játékszabályt!");
         }
@@ -103,12 +116,32 @@ public class Menu extends JFrame{
         JFileChooser fc = new JFileChooser();
         fc.setCurrentDirectory(workingDirectory);
         fc.showOpenDialog(this);
-        /*try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(fc.getSelectedFile()))){
-           // GameOfLife loadGame = (GameOfLife) in.readObject();
-            //loadGame.setVisible(true);
-        }catch(IOException | ClassNotFoundException exception){
+        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(fc.getSelectedFile()))){
+            Integer[][] board = (Integer[][]) in.readObject();
+            Object rule = in.readObject();
+
+            GameOfLife gol = new GameOfLife(board, rule);
+            start(gol);
+        }catch(ClassNotFoundException | IOException exception){
             JOptionPane.showMessageDialog(this, "Nem sikerult betolteni" + exception.toString());
-        }*/
+        }
+    }
+
+    public void start(GameOfLife loadGame) {
+        GridDrawer grid = new GridDrawer(loadGame.getCurrentState(), loadGame);
+
+        Thread simulationThread = new Thread(() -> {
+            try {
+                grid.run();
+            } catch (InterruptedException exception) {
+                System.out.println("Nem sikerült a körszimuláció");
+            }
+        });
+        simulationThread.setDaemon(true);
+        simulationThread.start();
+        SwingUtilities.invokeLater(() -> {
+            grid.setVisible(true);
+        });
     }
 
     public void updateRuleSelector(){
@@ -122,5 +155,20 @@ public class Menu extends JFrame{
                 model.addAll(List.of(triangleRule));
             }
             ruleSelector.setModel(model);
+    }
+    public static void increaseSleepTime(){
+        if(SLEEPTIME < 3000) {
+            SLEEPTIME = SLEEPTIME * 2;
+            System.out.println(SLEEPTIME);
+        }
+    }
+    public static void decreaseSleepTime(){
+        if(SLEEPTIME > 30) {
+            SLEEPTIME = SLEEPTIME/2;
+            System.out.println(SLEEPTIME);
+        }
+    }
+    public static void startStop(){
+        paused = !paused;
     }
 }
