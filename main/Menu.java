@@ -124,6 +124,8 @@ public class Menu extends JFrame{
             start(gol);
         }catch(ClassNotFoundException | IOException exception){
             JOptionPane.showMessageDialog(this, "Nem sikerult betolteni" + exception.toString());
+        }catch(NullPointerException exception){
+            JOptionPane.showMessageDialog(this, "Nem választottál fájlt!");
         }
     }
 
