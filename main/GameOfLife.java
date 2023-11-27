@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class GameOfLife implements Serializable {
-    private final Integer width;
-    private final Integer height;
+    public final Integer width;
+    public final Integer height;
     private static Integer[][] currentState;
     private static Integer[][] nextState;
     private static boolean isFading = false;
-    private static final Integer ALIVE = 100;
+    protected static final Integer ALIVE = 100;
     private static final Integer DEAD = 0;
     private final Object object;
     private final ArrayList<Integer> Born;
@@ -48,9 +48,9 @@ public class GameOfLife implements Serializable {
     }
 
     public GameOfLife(Integer[][] board, Object object){
-        this(65,65, object);
-        for(int i = 0; i < 65; i++){
-            for(int j = 0; j < 65; j++){
+        this(board.length,board[0].length, object);
+        for(int i = 0; i < board.length; i++){
+            for(int j = 0; j < board[0].length; j++){
                 currentState[i][j] = board[i][j];
                 nextState[i][j] = board[i][j];
             }
@@ -159,16 +159,6 @@ public class GameOfLife implements Serializable {
         calculateNextState();
         for(int i = 0; i < width; i++){
             if (height >= 0) System.arraycopy(nextState[i], 0, currentState[i], 0, height);
-        }
-    }
-
-
-    public void display(){
-        for(int i = 0; i < width; i++){
-            for(int j = 0; j < height; j++){
-                System.out.print(currentState[i][j]);
-            }
-            System.out.print("\n");
         }
     }
 

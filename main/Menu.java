@@ -14,9 +14,9 @@ public class Menu extends JFrame{
     private final JComboBox<Object> ruleSelector = new JComboBox<>();
 
     private static final Object[] availableGrids = new Object[3];
-    private static final Object[] rectangleRule = new Object[1];
-    private static final Object[] hexagonRule = new Object[1];
-    private static final Object[] triangleRule = new Object[1];
+    private static final Object[] rectangleRule = new Object[2];
+    private static final Object[] hexagonRule = new Object[2];
+    private static final Object[] triangleRule = new Object[2];
 
     static{
         availableGrids[0] = "Négyszög alapú pálya";
@@ -24,8 +24,11 @@ public class Menu extends JFrame{
         availableGrids[2] = "Háromszög alapú pálya";
 
         rectangleRule[0] = "B3/S23";
+        rectangleRule[1] = "B3678/S34678";
         hexagonRule[0] = "B3/S23";
+        hexagonRule[1] = "B2/S2";
         triangleRule[0] = "B3/S23";
+        triangleRule[1] = "B2/S23";
     }
 
 
@@ -102,8 +105,23 @@ public class Menu extends JFrame{
 
     public void startNewGame() throws InterruptedException {
         if(ruleSelector.getSelectedItem() != null) {
-            GameOfLife gol = new GameOfLife(65, 65, ruleSelector.getSelectedItem());
-            start(gol);
+            GameOfLife gol;
+            switch (Objects.requireNonNull(gridSelector.getSelectedItem()).toString()){
+                case "Hatszög alapú pálya": {
+                    gol = new HexagonalGameOfLife(85, 85, ruleSelector.getSelectedItem());
+                    break;
+                }
+                case "Háromszög alapú pálya": {
+                    gol = new TriangularGameOfLife(57, 115, ruleSelector.getSelectedItem());
+                    break;
+                }
+                default: {
+                    gol = new GameOfLife(85, 85, ruleSelector.getSelectedItem());
+                    break;
+                }
+
+            }
+            start(gol, gridSelector.getSelectedItem());
         }else{
             JOptionPane.showMessageDialog(this, "Nem választottad ki a játékszabályt!");
         }
@@ -119,9 +137,21 @@ public class Menu extends JFrame{
         try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(fc.getSelectedFile()))){
             Integer[][] board = (Integer[][]) in.readObject();
             Object rule = in.readObject();
-
-            GameOfLife gol = new GameOfLife(board, rule);
-            start(gol);
+            Object shape = in.readObject();
+            System.out.println(shape.toString());
+            GameOfLife gol;
+            switch (shape.toString()){
+                case "Hatszög alapú pálya":
+                    gol = new HexagonalGameOfLife(board, rule);
+                    break;
+                case "Háromszög alapú pálya":
+                    gol = new TriangularGameOfLife(board, rule);
+                    break;
+                default:
+                    gol = new GameOfLife(board, rule);
+                    break;
+            }
+            start(gol, shape);
         }catch(ClassNotFoundException | IOException exception){
             JOptionPane.showMessageDialog(this, "Nem sikerult betolteni" + exception);
         }catch(NullPointerException exception){
@@ -129,8 +159,8 @@ public class Menu extends JFrame{
         }
     }
 
-    public void start(GameOfLife loadGame) {
-        GridDrawer grid = new GridDrawer(loadGame.getCurrentState(), loadGame);
+    public void start(GameOfLife loadGame, Object shape) {
+        GridDrawer grid = new GridDrawer(loadGame.getCurrentState(), loadGame, shape);
 
         Thread simulationThread = new Thread(() -> {
             try {

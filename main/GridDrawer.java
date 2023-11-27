@@ -13,22 +13,35 @@ public class GridDrawer extends JFrame {
     
     GameOfLife currentGame;
     private Integer[][] grid;
-    private GridPanel gridPanel;
+    private JPanel gridPanel;
     JPanel interactionPanel;
+    Object shape;
 
-    public GridDrawer(Integer[][] grid, GameOfLife gol) {
+    public GridDrawer(Integer[][] grid, GameOfLife gol, Object gridType) {
         currentGame = gol;
         this.grid = grid;
-        initUI();
+        this.shape = gridType;
+        initUI(gridType);
     }
 
-    private void initUI() {
+    private void initUI(Object gridType) {
         setTitle("Életjáték a négyzetrácson");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1080, 1080);
         setLocationRelativeTo(null);
 
-        gridPanel = new GridPanel();
+        switch (gridType.toString()){
+            case "Hatszög alapú pálya":
+                gridPanel = new HexagonalGrid();
+                break;
+
+            case "Háromszög alapú pálya":
+                gridPanel = new TriangularGrid();
+                break;
+            default:
+                gridPanel = new GridPanel();
+                break;
+        }
         add(gridPanel, BorderLayout.CENTER);
 
         JMenuBar menuBar = getjMenuBar();
@@ -97,9 +110,22 @@ public class GridDrawer extends JFrame {
                 abortSave = true;
             }
             if(!abortSave) {
-                try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("saves/" + text + ".txt"))){
+                String location = new String();
+                switch (shape.toString()){
+                        case "Hatszög alapú pálya":
+                            location = "saves/hexagon_grid/";
+                            break;
+                        case "Háromszög alapú pálya":
+                            location = "saves/triangle_grid/";
+                            break;
+                        default:
+                            location = "saves/rectangle_grid/";
+                            break;
+                }
+                try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(location + text + ".txt"))){
                     out.writeObject(currentGame.getCurrentState());
                     out.writeObject(currentGame.getRule());
+                    out.writeObject(shape);
                     System.exit(0);
                 } catch (IOException ex) {
                     System.out.println(ex + "\n Nem sikerült menteni!");
@@ -128,19 +154,19 @@ public class GridDrawer extends JFrame {
             if(!Menu.paused) {
                 currentGame.simulateGeneration();
                 setGrid(currentGame.getCurrentState());
-                currentGame.display();
             }
         }
     }
 
-    private class GridPanel extends JPanel {
+    public class GridPanel extends JPanel {
 
         public GridPanel() {
             addMouseListener(new GridMouseListener());
         }
 
-        private int width;
-        private int height;
+        public int width;
+        public int height;
+
 
         @Override
         protected void paintComponent(Graphics g) {
@@ -186,6 +212,184 @@ public class GridDrawer extends JFrame {
 
                 if (row >= 0 && row < grid.length && col >= 0 && col < grid[0].length) {
                     System.out.println("changestate: " + col + " " + row);
+                    currentGame.changeCellState(row, col);
+                    setGrid(currentGame.getCurrentState());
+                }
+            }
+        }
+    }
+
+    public class HexagonalGrid extends JPanel {
+
+        private static int HEX_SIZE;
+        private static int HEX_WIDTH ;
+        private static int HEX_HEIGHT;
+
+        public int width;
+        public int height;
+
+
+        public HexagonalGrid(){
+            addMouseListener(new HexGridMouseListener());
+        }
+
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
+            width = getWidth();
+            height = getHeight();
+            HEX_SIZE = 6;
+            HEX_WIDTH = (int) (Math.sqrt(3) * HEX_SIZE);
+            HEX_HEIGHT = 2 * HEX_SIZE;
+
+            for (int row = 0; row < grid.length; row++) {
+                for (int col = 0; col < grid[row].length; col++) {
+                    int x = (col * HEX_WIDTH) + HEX_WIDTH;
+                    int y = (row * (HEX_HEIGHT - HEX_HEIGHT/4)) + HEX_HEIGHT; // Adjust spacing as needed
+
+                    // Offset odd rows by half a hexagon's width
+                    if (row % 2 == 1) {
+                        x -= HEX_WIDTH / 2;
+                    }
+
+
+                    drawHexagon(g2d, x, y, grid[row][col]);
+                }
+            }
+        }
+
+        private void drawHexagon(Graphics2D g2d, int x, int y, Integer state) {
+            int[] xPoints = new int[6];
+            int[] yPoints = new int[6];
+
+            for (int i = 0; i < 6; i++) {
+                double angleRad = Math.toRadians(60 * i - 30); // Adjust the angle for pointy orientation
+                xPoints[i] = x + (int) (HEX_SIZE * Math.cos(angleRad));
+                yPoints[i] = y + (int) (HEX_SIZE * Math.sin(angleRad));
+            }
+
+            Color cellColor = Color.WHITE;
+
+            for(int i = 0; i <= 100; i += 10){
+                if(state == i){
+                    int unit = (255/100) * i;
+                    int red = 255;
+                    int green = 255 - unit;
+                    int blue = 255 - unit;
+                    cellColor = new Color(red, blue, green);
+                }
+            }
+
+            g2d.setColor(cellColor);
+
+            g2d.fillPolygon(xPoints, yPoints, 6);
+
+            g2d.setColor(Color.BLACK);
+            g2d.drawPolygon(xPoints, yPoints, 6);
+
+        }
+
+        private class HexGridMouseListener extends MouseAdapter {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                int col;
+                int row = (e.getY() - HEX_HEIGHT) / (HEX_HEIGHT - HEX_HEIGHT/4);
+                if(row % 2 == 1){
+                    col = ((e.getX() + HEX_WIDTH/4) - HEX_WIDTH/2) / HEX_WIDTH;
+                }else{
+                    col = ((e.getX() + HEX_WIDTH/4) - HEX_WIDTH) / HEX_WIDTH;
+                }
+
+
+                if (row >= 0 && row < grid.length && col >= 0 && col < grid[0].length) {
+                    currentGame.changeCellState(row, col);
+                    setGrid(currentGame.getCurrentState());
+                }
+            }
+        }
+    }
+    public class TriangularGrid extends JPanel{
+        private static int TRIANGLE_SIZE;
+        private static int TRIANGLE_SIDE;
+        private static int TRIANGLE_HEIGHT;
+
+        public int height;
+        public int width;
+
+        public TriangularGrid(){
+            addMouseListener(new TriangleGridMouseListener());
+        }
+
+        @Override
+        protected void paintComponent(Graphics g){
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
+            width = getWidth();
+            height = getHeight();
+            TRIANGLE_SIZE = 7;
+            TRIANGLE_HEIGHT = TRIANGLE_SIZE * 2;
+            TRIANGLE_SIDE = (int) ((TRIANGLE_HEIGHT * 2) / Math.sqrt(3));
+
+            for (int row = 0; row < grid.length; row++) {
+                for (int col = 0; col < grid[row].length; col++) {
+                    int x = (col * TRIANGLE_SIDE/2 + TRIANGLE_SIDE);
+                    int y = row * TRIANGLE_HEIGHT + TRIANGLE_HEIGHT/2;
+
+                    boolean flippedOrientation = (row % 2 == 0) ? col % 2 ==0 : col % 2 == 1;
+                    drawTriangle(g2d, x, y, grid[row][col], flippedOrientation);
+                }
+            }
+        }
+        private void drawTriangle(Graphics2D g2d, int x, int y, Integer state, boolean flipped) {
+            int[] xPoints = new int[3];
+            int[] yPoints = new int[3];
+
+            if (!flipped) {
+                xPoints[0] = x;
+                yPoints[0] = y;
+                xPoints[1] = x + TRIANGLE_SIDE / 2;
+                yPoints[1] = y + TRIANGLE_HEIGHT;
+                xPoints[2] = x - TRIANGLE_SIDE / 2;
+                yPoints[2] = y + TRIANGLE_HEIGHT;
+            } else {
+                xPoints[0] = x;
+                yPoints[0] = y + TRIANGLE_HEIGHT;
+                xPoints[1] = x + TRIANGLE_SIDE / 2;
+                yPoints[1] = y;
+                xPoints[2] = x - TRIANGLE_SIDE / 2;
+                yPoints[2] = y;
+            }
+
+            Color cellColor = Color.WHITE;
+
+            for(int i = 0; i <= 100; i += 10){
+                if(state == i){
+                    int unit = (255/100) * i;
+                    int red = 255;
+                    int green = 255 - unit;
+                    int blue = 255 - unit;
+                    cellColor = new Color(red, blue, green);
+                }
+            }
+
+            g2d.setColor(cellColor);
+
+            g2d.fillPolygon(xPoints, yPoints, 3);
+
+            g2d.setColor(Color.BLACK);
+            g2d.drawPolygon(xPoints, yPoints, 3);
+        }
+        private class TriangleGridMouseListener extends MouseAdapter {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                int col = ((e.getX() - TRIANGLE_SIDE + TRIANGLE_SIDE/4) * 2 / TRIANGLE_SIDE);
+                int row = ((e.getY() - TRIANGLE_HEIGHT/2)/TRIANGLE_HEIGHT);
+
+                if (row >= 0 && row < grid.length && col >= 0 && col < grid[0].length) {
                     currentGame.changeCellState(row, col);
                     setGrid(currentGame.getCurrentState());
                 }
