@@ -105,23 +105,13 @@ public class GridDrawer extends JFrame {
             JFrame frame = new JFrame();
             String message = "A mentési fájl neve:";
             String text = JOptionPane.showInputDialog(frame, message);
-            boolean abortSave = false;
-            if (text == null) {
-                abortSave = true;
-            }
+            boolean abortSave = (text == null);
             if(!abortSave) {
-                String location = new String();
-                switch (shape.toString()){
-                        case "Hatszög alapú pálya":
-                            location = "saves/hexagon_grid/";
-                            break;
-                        case "Háromszög alapú pálya":
-                            location = "saves/triangle_grid/";
-                            break;
-                        default:
-                            location = "saves/rectangle_grid/";
-                            break;
-                }
+                String location = switch (shape.toString()) {
+                    case "Hatszög alapú pálya" -> "saves/hexagon_grid/";
+                    case "Háromszög alapú pálya" -> "saves/triangle_grid/";
+                    default -> "saves/rectangle_grid/";
+                };
                 try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(location + text + ".txt"))){
                     out.writeObject(currentGame.getCurrentState());
                     out.writeObject(currentGame.getRule());

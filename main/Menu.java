@@ -139,18 +139,11 @@ public class Menu extends JFrame{
             Object rule = in.readObject();
             Object shape = in.readObject();
             System.out.println(shape.toString());
-            GameOfLife gol;
-            switch (shape.toString()){
-                case "Hatszög alapú pálya":
-                    gol = new HexagonalGameOfLife(board, rule);
-                    break;
-                case "Háromszög alapú pálya":
-                    gol = new TriangularGameOfLife(board, rule);
-                    break;
-                default:
-                    gol = new GameOfLife(board, rule);
-                    break;
-            }
+            GameOfLife gol = switch (shape.toString()) {
+                case "Hatszög alapú pálya" -> new HexagonalGameOfLife(board, rule);
+                case "Háromszög alapú pálya" -> new TriangularGameOfLife(board, rule);
+                default -> new GameOfLife(board, rule);
+            };
             start(gol, shape);
         }catch(ClassNotFoundException | IOException exception){
             JOptionPane.showMessageDialog(this, "Nem sikerult betolteni" + exception);
