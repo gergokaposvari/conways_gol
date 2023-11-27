@@ -12,9 +12,10 @@ public class TriangularGameOfLife extends GameOfLife{
         super(board, object);
     }
 
+    //Itt csak felüldefiniálom
     @Override
-    public Integer countAliveNeighbours(Integer x, Integer y){
-        Integer aliveNeighbours = 0;
+    public Integer countAliveNeighbors(Integer x, Integer y){
+        Integer aliveNeighbors = 0;
         for(int i = -1; i <= 1; i++){
             for(int j = -1; j <= 1; j++){
                 if((i == -1 && j == 0) || (i == 1 && j == 0) || (i == 0 && j ==1)) {
@@ -22,12 +23,12 @@ public class TriangularGameOfLife extends GameOfLife{
                     int row = y + j;
                     if ((col >= 0 && col < width) && (row >= 0 && row < height)) {
                         if (Objects.equals(getCellState((col), (row)), ALIVE)) {
-                            aliveNeighbours++;
+                            aliveNeighbors++;
                         }
                     }
                 }
             }
         }
-        return aliveNeighbours;
+        return aliveNeighbors;
     }
 }

@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Objects;
+import java.util.Random;
 
 public class GridDrawer extends JFrame {
     
@@ -73,6 +74,23 @@ public class GridDrawer extends JFrame {
         JPanel startStopPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         startStopPanel.add(startStop);
 
+        Random random = new Random();
+        JButton setGridRandomly = new JButton("Randomizálás");
+        setGridRandomly.addActionListener(e -> {
+            for(int i = 0; i < grid.length; i++){
+                for(int j = 0; j < grid[0].length; j++){
+                    int randomValue = random.nextInt(2);
+                    if(randomValue % 2 == 0){
+                        currentGame.changeCellState(i, j);
+                    }
+
+                }
+            }
+            setGrid(currentGame.getCurrentState());
+        });
+        JPanel setRandomlyPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        setRandomlyPanel.add(setGridRandomly);
+
         JButton changeFading = new JButton("Színátmenet be");
         changeFading.addActionListener(e -> {
             currentGame.changeFading();
@@ -88,6 +106,7 @@ public class GridDrawer extends JFrame {
 
         interactionPanel.add(increaseSpeed);
         interactionPanel.add(startStop);
+        interactionPanel.add(setRandomlyPanel);
         interactionPanel.add(changeFading);
         interactionPanel.add(decreaseSpeed);
 

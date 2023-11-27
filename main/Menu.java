@@ -16,7 +16,7 @@ public class Menu extends JFrame{
     private static final Object[] availableGrids = new Object[3];
     private static final Object[] rectangleRule;
     private static final Object[] hexagonRule;
-    private static final Object[] triangleRule = new Object[2];
+    private static final Object[] triangleRule;
 
     static{
         availableGrids[0] = "Négyszög alapú pálya";
@@ -31,8 +31,9 @@ public class Menu extends JFrame{
         hexagonRule = new Object[]{
                 "B2/S23", "B2/2", "B2/S34",
         };
-        triangleRule[0] = "B3/S23";
-        triangleRule[1] = "B2/S23";
+        triangleRule = new Object[]{
+                "B2/S23", "B3/S23", "B2/S123", "B1/S2"
+        };
     }
 
 

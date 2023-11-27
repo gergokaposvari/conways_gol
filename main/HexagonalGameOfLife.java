@@ -12,8 +12,8 @@ public class HexagonalGameOfLife extends GameOfLife{
     }
 
     @Override
-    public Integer countAliveNeighbours(Integer x, Integer y) {
-        Integer aliveNeighbours = 0;
+    public Integer countAliveNeighbors(Integer x, Integer y) {
+        Integer aliveNeighbors = 0;
         int[][] neighbors;
         if (x % 2 == 0) {
             neighbors = new int[][]{
@@ -32,12 +32,10 @@ public class HexagonalGameOfLife extends GameOfLife{
             int row = y + y_offset;
             if(col >= 0 && col < width && row >= 0 && row < height) {
                 if (Objects.equals(getCellState(col, row), ALIVE)) {
-                    aliveNeighbours++;
+                    aliveNeighbors++;
                 }
             }
         }
-        return aliveNeighbours;
+        return aliveNeighbors;
     }
 }
-
-

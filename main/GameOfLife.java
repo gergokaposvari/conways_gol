@@ -79,8 +79,8 @@ public class GameOfLife implements Serializable {
         }
     }
 
-    public Integer countAliveNeighbours(Integer x, Integer y){
-        Integer aliveNeighbours = 0;
+    public Integer countAliveNeighbors(Integer x, Integer y){
+        Integer aliveNeighbors = 0;
         for(int i = (-1); i <= 1; i++){
             for(int j = (-1); j <= 1; j++){
                 if(!(i == 0 && j == 0)){
@@ -88,13 +88,13 @@ public class GameOfLife implements Serializable {
                      int row = y + j;
                      if((col >= 0 && col < width) && (row >= 0 && row < height)) {
                          if (Objects.equals(getCellState((col), (row)), ALIVE)) {
-                             aliveNeighbours++;
+                             aliveNeighbors++;
                          }
                      }
                 }
             }
         }
-        return aliveNeighbours;
+        return aliveNeighbors;
     }
 
     public void calculateNextState(){
@@ -103,11 +103,11 @@ public class GameOfLife implements Serializable {
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
                     if (Objects.equals(currentState[i][j], DEAD)) {
-                        if (Born.contains(countAliveNeighbours(i, j))) {
+                        if (Born.contains(countAliveNeighbors(i, j))) {
                             nextState[i][j] = ALIVE;
                         }
                     } else if (Objects.equals(currentState[i][j], ALIVE)) {
-                        if (Alive.contains(countAliveNeighbours(i, j))) {
+                        if (Alive.contains(countAliveNeighbors(i, j))) {
                             nextState[i][j] = ALIVE;
                         } else {
                             nextState[i][j] = DEAD;
@@ -119,13 +119,13 @@ public class GameOfLife implements Serializable {
             for(int i = 0; i < width; i++){
                 for(int j = 0; j < height; j++){
                     if(Objects.equals(currentState[i][j], ALIVE)){
-                        if(Alive.contains(countAliveNeighbours(i, j))){
+                        if(Alive.contains(countAliveNeighbors(i, j))){
                             nextState[i][j] = ALIVE;
                         }else{
                             nextState[i][j] = 90;
                         }
                     }else{
-                        if(Born.contains(countAliveNeighbours(i, j))) {
+                        if(Born.contains(countAliveNeighbors(i, j))) {
                             nextState[i][j] = ALIVE;
                         }else{
                             for(int k = 90; k >= 0; k -= 10){
