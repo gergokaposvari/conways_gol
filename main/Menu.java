@@ -14,8 +14,8 @@ public class Menu extends JFrame{
     private final JComboBox<Object> ruleSelector = new JComboBox<>();
 
     private static final Object[] availableGrids = new Object[3];
-    private static final Object[] rectangleRule = new Object[2];
-    private static final Object[] hexagonRule = new Object[2];
+    private static final Object[] rectangleRule;
+    private static final Object[] hexagonRule;
     private static final Object[] triangleRule = new Object[2];
 
     static{
@@ -23,10 +23,14 @@ public class Menu extends JFrame{
         availableGrids[1] = "Hatszög alapú pálya";
         availableGrids[2] = "Háromszög alapú pálya";
 
-        rectangleRule[0] = "B3/S23";
-        rectangleRule[1] = "B3678/S34678";
-        hexagonRule[0] = "B3/S23";
-        hexagonRule[1] = "B2/S2";
+        rectangleRule = new Object[]{
+                "B3/S23", "B3678/S34678", "B36/S23", "B2/S", "B3/S012345678",
+                "B1/S1", "B1357/S1357", "B4678/S35678", "B234/S", "B3/S12345",
+                "B37/S12345", "B678/S345678"
+        };
+        hexagonRule = new Object[]{
+                "B2/S23", "B2/2", "B2/S34",
+        };
         triangleRule[0] = "B3/S23";
         triangleRule[1] = "B2/S23";
     }
