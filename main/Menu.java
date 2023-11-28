@@ -32,7 +32,7 @@ public class Menu extends JFrame{
                 "B2/S23", "B2/2", "B2/S34",
         };
         triangleRule = new Object[]{
-                "B2/S23", "B3/S23", "B2/S123", "B1/S2"
+                "B2/S23", "B3/S23", "B2/S123", "B1/S"
         };
     }
 

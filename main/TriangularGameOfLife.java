@@ -19,8 +19,8 @@ public class TriangularGameOfLife extends GameOfLife{
         for(int i = -1; i <= 1; i++){
             for(int j = -1; j <= 1; j++){
                 if((i == -1 && j == 0) || (i == 1 && j == 0) || (i == 0 && j ==1)) {
-                    int col = x + i;
-                    int row = y + j;
+                    int col = x + j;
+                    int row = y + i;
                     if ((col >= 0 && col < width) && (row >= 0 && row < height)) {
                         if (Objects.equals(getCellState((col), (row)), ALIVE)) {
                             aliveNeighbors++;
