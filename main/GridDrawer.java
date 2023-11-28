@@ -201,7 +201,7 @@ public class GridDrawer extends JFrame {
                             int red = 255;
                             int green = 255 - unit;
                             int blue = 255 - unit;
-                            cellColor = new Color(red, blue, green);
+                            cellColor = new Color(red, green, blue);
                         }
                     }
 
@@ -260,9 +260,8 @@ public class GridDrawer extends JFrame {
             for (int row = 0; row < grid.length; row++) {
                 for (int col = 0; col < grid[row].length; col++) {
                     int x = (col * HEX_WIDTH) + HEX_WIDTH;
-                    int y = (row * (HEX_HEIGHT - HEX_HEIGHT/4)) + HEX_HEIGHT; // Adjust spacing as needed
+                    int y = (row * (HEX_HEIGHT - HEX_HEIGHT/4)) + HEX_HEIGHT;
 
-                    // Offset odd rows by half a hexagon's width
                     if (row % 2 == 1) {
                         x -= HEX_WIDTH / 2;
                     }
@@ -278,7 +277,7 @@ public class GridDrawer extends JFrame {
             int[] yPoints = new int[6];
 
             for (int i = 0; i < 6; i++) {
-                double angleRad = Math.toRadians(60 * i - 30); // Adjust the angle for pointy orientation
+                double angleRad = Math.toRadians(60 * i - 30);
                 xPoints[i] = x + (int) (HEX_SIZE * Math.cos(angleRad));
                 yPoints[i] = y + (int) (HEX_SIZE * Math.sin(angleRad));
             }
