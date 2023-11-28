@@ -16,19 +16,29 @@ public class TriangularGameOfLife extends GameOfLife{
     @Override
     public Integer countAliveNeighbors(Integer x, Integer y){
         Integer aliveNeighbors = 0;
-        for(int i = -1; i <= 1; i++){
-            for(int j = -1; j <= 1; j++){
-                if((i == -1 && j == 0) || (i == 1 && j == 0) || (i == 0 && j ==1)) {
-                    int col = x + j;
-                    int row = y + i;
-                    if ((col >= 0 && col < width) && (row >= 0 && row < height)) {
-                        if (Objects.equals(getCellState((col), (row)), ALIVE)) {
+        boolean flippedOrientation = (x % 2 == 0) ? y % 2 ==0 : y % 2 == 1;
+        int[][] relativeCoordinates;
+                if(!flippedOrientation){
+                    relativeCoordinates = new int[][]{
+                            {1, 0}, {0, -1}, {0, 1}
+                    };
+                }else{
+                    relativeCoordinates = new int[][]{
+                            {-1, 0}, {0, -1}, {0, 1}
+                    };
+                }
+                for(int[] neighbbor : relativeCoordinates) {
+                    int x_offset = neighbbor[0];
+                    int y_offset = neighbbor[1];
+                    int col = x + x_offset;
+                    int row = y + y_offset;
+                    if(col >= 0 && col < width && row >= 0 && row < height) {
+                        if (Objects.equals(getCellState(col, row), ALIVE)) {
                             aliveNeighbors++;
                         }
                     }
                 }
-            }
-        }
+
         return aliveNeighbors;
     }
 }
