@@ -43,8 +43,6 @@ public class GameOfLife implements Serializable {
                 Alive.add(c - '0');
             }
         }
-        System.out.println(Born);
-        System.out.println(Alive);
     }
 
     public GameOfLife(Integer[][] board, Object object){

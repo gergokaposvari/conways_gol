@@ -170,6 +170,7 @@ public class Menu extends JFrame{
         simulationThread.setDaemon(true);
         simulationThread.start();
         grid.setVisible(true);
+        this.dispose();
     }
 
     public void updateRuleSelector(){

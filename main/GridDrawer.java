@@ -26,7 +26,7 @@ public class GridDrawer extends JFrame {
     }
 
     private void initUI(Object gridType) {
-        setTitle("Életjáték a négyzetrácson");
+        setTitle("Életjáték");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1080, 1080);
         setLocationRelativeTo(null);
@@ -112,6 +112,10 @@ public class GridDrawer extends JFrame {
 
 
         add(interactionPanel, BorderLayout.EAST);
+    }
+
+    public Integer[][] getGrid(){
+        return grid;
     }
 
     private JMenuBar getjMenuBar() {
