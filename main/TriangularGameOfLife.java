@@ -20,11 +20,15 @@ public class TriangularGameOfLife extends GameOfLife{
         int[][] relativeCoordinates;
                 if(!flippedOrientation){
                     relativeCoordinates = new int[][]{
-                            {1, 0}, {0, -1}, {0, 1}
+                            {1, -2}, {1, -1}, {1, 0},  {1, 1}, {1, 2},
+                            {0, -2}, {0, -1}, {0, 1}, {0, 2},
+                            {-1, -1}, {-1, 0}, {-1, 1}
                     };
                 }else{
                     relativeCoordinates = new int[][]{
-                            {-1, 0}, {0, -1}, {0, 1}
+                            {1, -1}, {1, 0}, {1, 1},
+                            {0, -2}, {0, -1}, {0, 1}, {0, 2},
+                            {-1, -2}, {-1, -1}, {-1, 0},  {-1, 1}, {-1, 2}
                     };
                 }
                 for(int[] neighbbor : relativeCoordinates) {
